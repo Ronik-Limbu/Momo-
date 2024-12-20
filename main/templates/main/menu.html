@@ -1,0 +1,137 @@
+{% extends "main/base.html" %}
+{% load static %}
+{% block title %}
+Menu
+{% endblock title %}
+{% block content %}
+
+<!-- gallery section start -->
+<div class="gallery_section layout_padding">
+   <div class="container">
+      <div class="row">
+         <div class="col-sm-12">
+            <h1 class="gallery_taital">Our Menu</h1>
+            <p class="gallery_text"><span style="color:red">Our menu is more than just momos</span><br>With a variety of dishes to cater to all tastes and preferences.</p>
+         </div>
+      </div>
+      <div>
+         <h1 class="just">Scan the QR code</h1>
+         <h1 class="qr-image"><img src="{% static 'images/Qr.png' %}"></h1>
+      </div>
+
+      <div class="card text-center tab-titles-class">
+         <div class="container">
+            <ul class="tab-titles text-center" data-aos="fade-up" data-aos-duration="1000">
+               <li class="tab-links menu-title active" onclick="opentab('drinks')">Drinks</li>
+               <li class="tab-links menu-title" onclick="opentab('snacks')">Snacks</li>
+               <li class="tab-links menu-title" onclick="opentab('lunch')">Lunch</li>
+            </ul>
+         </div>
+
+         <div class="tab-content active-tab" id="drinks" data-aos="fade-up" data-aos-duration="1000">
+            <div class="container">
+                <div class="row">
+                    {% for drink in drinks %}
+                    <div class="col-md-4 menu-item">
+                        <div class="menu-item-container">
+                            <img src="{{ drink.image.url }}" alt="{{ drink.name }}" class="img-fluid">
+                            <div class="overlay">
+                                <div class="text">
+                                    <form method="POST" action="{% url 'add_to_cart' drink.id %}">  <!-- Change food_item.id to drink.id -->
+                                        {% csrf_token %}
+                                        <input type="hidden" name="food_name" value="{{ drink.name }}">  
+                                        <button type="submit" class="add-to-cart-btn">
+                                            <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="menu-item-details">
+                            <span>{{ drink.name }}</span>
+                            <div class="card-price">रु{{ drink.price }}</div>
+                            <div class="average-rating">
+                                Average Rating: 
+                                <span class="rating-value">{{ food.average_rating|floatformat:1 }}</span> <!-- Display average rating -->
+                             </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-md-12">
+                        <p>No drinks available.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="snacks" data-aos="fade-up" data-aos-duration="1000">
+            <div class="container">
+                <div class="row">
+                    {% for snack in snacks %}
+                    <div class="col-md-4 menu-item">
+                        <div class="menu-item-container">
+                            <img src="{{ snack.image.url }}" alt="{{ snack.name }}" class="img-fluid">
+                            <div class="overlay">
+                                <div class="text">
+                                    <form method="POST" action="{% url 'add_to_cart' snack.id %}">  <!-- Use snack.id -->
+                                        {% csrf_token %}
+                                        <input type="hidden" name="food_name" value="{{ snack.name }}">
+                                        <button type="submit" class="add-to-cart-btn">
+                                            <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="menu-item-details">
+                            <span>{{ snack.name }}</span>
+                            <div class="card-price">रु{{ snack.price }}</div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-md-12">
+                        <p>No snacks available.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="lunch" data-aos="fade-up" data-aos-duration="1000">
+            <div class="container">
+                <div class="row">
+                    {% for lunch_item in lunch %}
+                    <div class="col-md-4 menu-item">
+                        <div class="menu-item-container">
+                            <img src="{{ lunch_item.image.url }}" alt="{{ lunch_item.name }}" class="img-fluid">
+                            <div class="overlay">
+                                <div class="text">
+                                    <form method="POST" action="{% url 'add_to_cart' lunch_item.id %}">  <!-- Use lunch_item.id -->
+                                        {% csrf_token %}
+                                        <input type="hidden" name="food_name" value="{{ lunch_item.name }}">
+                                        <button type="submit" class="add-to-cart-btn">
+                                            <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="menu-item-details">
+                            <span>{{ lunch_item.name }}</span>
+                            <div class="card-price">रु{{ lunch_item.price }}</div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-md-12">
+                        <p>No lunch items available.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+      <div class="seemore_bt"><a href="#">See More</a></div>
+   </div>
+</div>
+
+{% endblock content %}

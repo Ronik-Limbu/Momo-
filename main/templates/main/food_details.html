@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+  Food Details
+{% endblock title %}
+{% block contain %}
+
+<div class="container-fluid">
+  {% for food in Food %}
+    <div class="left-section">
+      <div class="course-title">
+        <h2>{{ food.name }}</h2>
+      </div>
+      <div class="course-meta">
+        <span>By Sipalaya InfoTech</span>
+        <span>Categories: Development</span>
+      </div>
+      <img class="course-image" height="400" src="{{ food.image.url }}" width="600"/>
+    </div>
+    <div class="right-section">
+      <div class="price-section">
+        <span class="float-start badge rounded-pill bg-danger text-decoration-line-through">रु {{ food.mark_price }}</span>
+        <span class="float-start badge rounded-pill bg-success">रु {{ food.price }}</span>
+      </div>
+      
+      <div class="d-grid gap-2 my-5">
+        <a href="{% url 'cart_add' food.id %}" class="btn btn-warning bold-btn">Add to cart</a>
+      </div>
+
+      <div class="course-details">
+        <div>
+          <i class="fas fa-signal"></i> All Levels
+        </div>
+        <div>
+          <i class="fas fa-clock"></i> 100 hours Duration
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+<!-- Comments and Reviews Section -->
+<div class="container-fluid">
+  <div class="row">
+    <div class="col">
+      <h3>Reviews</h3>
+      <div class="container">
+        {% if reviews %}
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Date</th>
+              <th>Comment</th>
+              <th>Rating</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for review in reviews %}
+            <tr>
+              <td><i class="fa-solid fa-user-secret">{{ review.user.username }}</i></td>
+              <td><i class="fa-solid fa-calendar-xmark"></i> {{ review.date }}</td>
+              <td class="text-wrap"><i class="fa-solid fa-comments"></i> {{ review.comment }}</td>
+              <td>
+                <span class="star-rating">
+                  {% for i in "12345" %}
+                    <span class="star {% if i <= review.rating %}selected{% endif %}">★</span>
+                  {% endfor %}
+                </span>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+          <p>No reviews yet.</p>
+        {% endif %}
+      </div>
+
+      <!-- Review and Rating Form -->
+      <div class="container-fluid my-container">
+        <h4>Write Your Review</h4>
+        {% if request.user.is_authenticated %}
+          <form method="post" action="{% url 'rate_food' food.id %}">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="comment">Comment</label>
+              <textarea name="comment" class="form-control" rows="3" required></textarea>
+            </div>
+            <div class="form-group">
+              <label for="rating">Rating</label>
+              <select name="rating" class="form-control" required>
+                <option value="">Select Rating</option>
+                <option value="1">1 Star</option>
+                <option value="2">2 Stars</option>
+                <option value="3">3 Stars</option>
+                <option value="4">4 Stars</option>
+                <option value="5">5 Stars</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        {% else %}
+          <h3 class="text-center alert alert-danger">You should login first. Click Here <a href="{% url 'log_in' %}">Login</a></h3>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock contain %}

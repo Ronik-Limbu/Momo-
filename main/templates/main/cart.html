@@ -1,0 +1,73 @@
+{% extends "main/base.html" %}
+{% load static %}
+{% block title %}
+Cart
+{% endblock title %}
+{% block content %}
+
+<div class="container mt-5">
+    <h1>Your Cart</h1>
+
+    {% if cart_items %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Image</th> <!-- Added Image column -->
+                    <th>Food Item</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                    <tr>
+                        <td>
+                            <img src="{{ item.food_item.image.url }}" alt="{{ item.food_item.name }}" style="width: 100px; height: auto;"> <!-- Display Food Image -->
+                        </td>
+                        <td>{{ item.food_item.name }}</td>
+                        <td>
+                            <form method="POST" action="{% url 'update_cart' item.id %}">
+                                {% csrf_token %}
+                                <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="form-control" style="width: 80px;">
+                                <button type="submit" class="btn btn-primary mt-2">Update</button>
+                            </form>
+                        </td>
+                        <td>रु{{ item.food_item.price }}</td>
+                        <td>रु{{ item.total_price }}</td> <!-- Use total_price calculated in the view -->
+                        <td>
+                            <form method="POST" action="{% url 'remove_from_cart' item.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h3>Total: रु{{ total_price }}</h3>
+        <form method="POST" action="{% url 'proceed_to_payment' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success">Proceed to Payment</button>
+        </form>
+
+    {% else %}
+        <p>Your cart is empty.</p>
+    {% endif %}
+</div>
+
+<style>
+    .star-rating {
+        direction: rtl;
+        display: inline-block;
+    }
+    .star {
+        font-size: 24px;
+        color: gold;
+        cursor: pointer;
+    }
+</style>
+
+{% endblock content %}
